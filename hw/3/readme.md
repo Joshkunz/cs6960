@@ -16,3 +16,5 @@ make
 ```
 
 (the `-q` option just silences a lot of debugging information.)
+
+By default it compiles with most compiler checkers turned on: `-Wall -Wextra -pedantic -Werror -fsanitize=undefined -fsanitize=address`.
