@@ -1,0 +1,48 @@
+\documentclass[12pt]{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+
+\begin{document}
+
+\begin{flushright}
+Josh Kunz \\
+\today \\
+Homework 2 \\
+\end{flushright}
+
+\section{Lattice of Bitwise Values}
+\vspace{-2ex}
+
+\begin{center}
+\includegraphics{hw2-q1.pdf}
+\end{center}
+
+\section{Unsigned Addition Transfer Function}
+\vspace{-2ex}
+\begin{center}
+\begin{tabular}{c|ccccccccc}
++      & \verb|<?, ?>| & \verb|<?, 0>| & \verb|<?, 1>| & \verb|<0, ?>| & \verb|<1, ?>| & \verb|<0, 0>| & \verb|<0, 1>| & \verb|<1, 0>| & \verb|<1, 1>| \\
+\hline
+\verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| \\
+\verb|<?, 0>| & \verb|<?, ?>| & \verb|<?, 0>| & \verb|<?, 1>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, 0>| & \verb|<?, 1>| & \verb|<?, 0>| & \verb|<?, 0>| \\
+\verb|<?, 1>| & \verb|<?, ?>| & \verb|<?, 1>| & \verb|<?, 0>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, 1>| & \verb|<?, 0>| & \verb|<?, 1>| & \verb|<?, 0>| \\
+\verb|<0, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<0, ?>| & \verb|<?, ?>| & \verb|<1, ?>| & \verb|<?, ?>| \\
+\verb|<1, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<1, ?>| & \verb|<?, ?>| & \verb|<0, ?>| & \verb|<?, ?>| \\
+\verb|<0, 0>| & \verb|<?, ?>| & \verb|<?, 0>| & \verb|<?, 1>| & \verb|<0, ?>| & \verb|<1, ?>| & \verb|<0, 0>| & \verb|<0, 1>| & \verb|<1, 0>| & \verb|<1, 1>| \\
+\verb|<0, 1>| & \verb|<?, ?>| & \verb|<?, 1>| & \verb|<?, 0>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<0, 1>| & \verb|<1, 0>| & \verb|<1, 1>| & \verb|<0, 0>| \\
+\verb|<1, 0>| & \verb|<?, ?>| & \verb|<?, 0>| & \verb|<?, 1>| & \verb|<1, ?>| & \verb|<0, ?>| & \verb|<1, 0>| & \verb|<1, 1>| & \verb|<0, 0>| & \verb|<0, 1>| \\
+\verb|<1, 1>| & \verb|<?, ?>| & \verb|<?, 1>| & \verb|<?, 0>| & \verb|<?, ?>| & \verb|<?, ?>| & \verb|<1, 1>| & \verb|<0, 0>| & \verb|<0, 1>| & \verb|<1, 0>| \\
+\end{tabular}
+\end{center}
+
+\section{Three-bit Interval Lattice}
+
+\begin{center}
+\includegraphics[width=0.9\linewidth]{hw2-q3.pdf}
+\end{center}
+
+\section{Four-bit Unsigned Subtraction Transfer Function}
+
+\verb|https://gist.github.com/Joshkunz/3578d1df0850e31081c263290660d5b4|
+
+\end{document}
