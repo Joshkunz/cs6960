@@ -1,42 +1,15 @@
-#include "util.h"
+#include <cassert> 
+#include <cstring>
 #include "interval.h"
 
-#include <string>
-
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
-#include <climits>
-
-using namespace std;
-
-interval interval::operator-(const interval &rhs) {
-
-    /* TODO: Check if there is a better way to get an interval from a pointer. */
-    interval &lhs = *this;
-
-    int positive_result, negative_result;
-
-    /* This could possibly overflow positive */
-    bool positive_overflow = sub(lhs.hi, rhs.lo, &positive_result);
-
-    /* This could possibly overflow negative */
-    bool negative_overflow = sub(lhs.lo, rhs.hi, &negative_result);
-
-    /* If neither direction overflows, then just return the appropriate interval */
-    if (positive_overflow == negative_overflow && (negative_result <= positive_result)) {
-        return interval(negative_result, positive_result);
-    } else {
-        return interval::top();
-    }
-}
+static const unsigned int MASK = 0x3f;
 
 static unsigned int interval_members_or(const interval &iv) {
     unsigned int result = 0x0;
     unsigned int val;
     for (int i = iv.lo; i <= iv.hi; i++) {
         memcpy(&val, &i, sizeof(unsigned int));
-        result |= val & UTIL_MASK;
+        result |= val & MASK;
     }
     return result;
 }

@@ -5,8 +5,35 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "util.h"
 #include "interval.h"
+
+static const unsigned int MASK = 0x3f;
+
+static bool sub(int a, int b, int *result) {
+    bool did_overflow = false;
+
+    int res = a - b;
+    if (res < interval::MIN) {
+        did_overflow = true;
+        *result = res & MASK;
+    }
+    else if (res > interval::MAX) {
+        did_overflow = true;
+        *result = interval::MIN + (interval::MIN + res);
+    } else {
+        *result = res;
+    }
+    return did_overflow;
+}
+
+static int unsigned_to_signed(unsigned int v) {
+    assert((v & MASK) == v && "value must be 6 bit only");
+    if (v > interval::MAX) {
+        return interval::MIN + (interval::MIN + ((int) v));
+    } else {
+        return (int) v;
+    }
+}
 
 std::set<int> * concretize(interval &iv) {
     std::set<int> * s = new std::set<int>();
@@ -23,7 +50,6 @@ std::set<int> * transfer_sub(std::set<int> &s_lhs, std::set<int> &s_rhs) {
         for (int rhs : s_rhs) {
             int sub_v;
             sub(lhs, rhs, &sub_v);
-            assert_is_valid_value(sub_v);
             s->insert(sub_v);
         }
     }
@@ -38,8 +64,8 @@ std::set<int> * transfer_and(std::set<int> &s_lhs, std::set<int> &s_rhs) {
             unsigned int u_lhs, u_rhs, u_result;
             memcpy(&u_lhs, &lhs, sizeof(int));
             memcpy(&u_rhs, &rhs, sizeof(int));
-            u_lhs &= UTIL_MASK;
-            u_rhs &= UTIL_MASK;
+            u_lhs &= MASK;
+            u_rhs &= MASK;
             u_result = u_lhs & u_rhs;
             result = unsigned_to_signed(u_result);
             s->insert(result);
@@ -134,12 +160,13 @@ void test_all_and(bool quieter) {
 }
 
 int main(int argc, char * argv[]) {
-    bool quieter = false;
+    /* Hardcode to quiet for submission */
+    bool quieter = true;
     if (argc > 1 && std::string(argv[1]) == std::string("-q")) {
         quieter = true;
     }
 
-    //test_all_sub(quieter);
+    test_all_sub(quieter);
     test_all_and(quieter);
     return 0;
 }
