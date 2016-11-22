@@ -1,0 +1,139 @@
+==+== ASPLOS 2016 Paper Review Form
+==-== DO NOT CHANGE LINES THAT START WITH "==+==" UNLESS DIRECTED!
+==-== For further guidance, or to upload this file when you are done, go to:
+==-== https://asplos16.hotcrp.com/offline
+
+==+== =====================================================================
+==+== Begin Review
+==+== Reviewer: Josh Kunz <josh@kunz.xyz> 
+
+==+== Paper Number
+
+(Enter paper number here)
+
+==+== Review Readiness
+==-== Enter "Ready" if the review is ready for others to see:
+
+Ready
+
+==+== A. Overall merit
+==-== Choices: 1. Reject
+==-== 2. Weak reject
+==-== 3. Weak accept
+==-== 4. Accept
+==-== 5. Strong accept
+==-== Enter the number of your choice:
+
+(Your choice here)
+
+==+== B. ASPLOS/interdisciplinary? (hidden from authors)
+==-== Does the paper share ASPLOS's interdisciplinary focus?
+==-== Choices: 1. No
+==-== 2. Maybe
+==-== 3. Yes
+==-== Enter the number of your choice:
+
+(Your choice here)
+
+==+== C. Reviewer Expertise/Confidence
+==-== Choices: 1. No familiarity with the area/low confidence in the review
+==-== 2. Some familiarity with the area/medium confidence in the
+==-== review
+==-== 3. Knowledgeable in the area/high confidence in the review
+==-== 4. Expert in the area/highest confidence in the review
+==-== Enter the number of your choice:
+
+(Your choice here)
+
+==+== D. Paper summary
+==-== Please summarize the paper briefly in your own words.
+
+This paper's main objective is to define a formal semantics for undefined
+behavior (UB) in llvm's IR. The paper's authors start by explaining the concept
+of IR UB and provide motivating examples for having UB in the IR. They then
+show that llvm IR's UB is inconsistently defined (with respect to various
+optimizations) and, more importantly, that this inconsistency can lead to an
+end-to-end miscompilation. Finally, they propose a model for consistently defining
+UB in llvm IR, a prototype implementation of their solution in llvm, as well
+as a performance evaluation of their prototype implementation.
+ 
+
+==+== E. Paper Strengths
+==-== What are the paper’s strengths? Just a couple sentences, please.
+
+* Provides a good motivation for the existence of UB in llvm, and even UB more generally
+* Provides a reasonable illustration of the types of inconsistencies in llvm's
+  UB semantics, and how those semantics could lead to compilation issues.
+* The author's proposed semantics seem reasonable, and don't seem to have an
+  undue impact on performance. Their semantics do address the issues they
+  illustrated in the earlier section on llvm's inconsistencies.
+
+==+== F. Paper Weaknesses
+==-== What are the paper’s weaknesses? Just a couple sentences, please.
+
+* The difference between 'undef' and 'poison' was not clear to me. I assume
+  that illustrating this was part of the point of the paper, but I still
+  don't fully understand why 'poison' has stricter semantics than 'undef'.
+* The discussion of the inconsistencies in llvm's current implementation was
+  quite difficult for me to follow, since I didn't understand the semantics
+  of 'poison'. I assume that this was unavoidable given the nature of the paper.
+  The section on inconsistencies did convince me that llvm's implementation
+  is actually inconsistent though.
+
+==+== G. Comments to authors
+
+This paper seemed like an important step in ensuring the correctness of llvm's
+optimizations. It successfully demonstrated that llvm's UB model was both
+necessary as well as insufficient, and the refinements proposed by the authors
+seemed reasonable and efficient.
+
+Other than slight issues with the description of llvm's inconsistencies, I
+overall enjoyed the paper.
+
+==+== H. Questions for authors’ response
+==-== Specific questions that could affect your accept/reject decision.
+==-== Remember that the authors have limited space and must respond to
+==-== all reviewers.
+
+ 
+
+==+== I. Comments to PC (hidden from authors)
+
+ 
+
+==+== J. Novelty
+==-== Choices: 1. Published before or openly commercialized
+==-== 2. Incremental improvement
+==-== 3. New contribution
+==-== 4. Surprisingly new contribution
+==-== Enter the number of your choice:
+
+(Your choice here)
+
+==+== K. Writing quality
+==-== Choices: 1. Unacceptable
+==-== 2. Needs improvement
+==-== 3. Adequate
+==-== 4. Well-written
+==-== 5. Outstanding
+==-== Enter the number of your choice:
+
+(Your choice here)
+
+==+== L. CACM Research Highlights nomination? (hidden from authors)
+==-== Choices: 1. No
+==-== 2. Yes
+==-== Enter the number of your choice:
+
+(Your choice here)
+
+==+== M. Best paper award quality? (hidden from authors)
+==-== Choices: 1. No
+==-== 2. Yes
+==-== Enter the number of your choice:
+
+(Your choice here)
+
+==+== Scratchpad (for unsaved private notes)
+
+==+== End Review
