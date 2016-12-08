@@ -1,0 +1,79 @@
+diff --git a/lib/Transforms/InstCombine/InstructionCombining.cpp b/lib/Transforms/InstCombine/InstructionCombining.cpp
+index 90eba68..633bd23 100644
+--- a/lib/Transforms/InstCombine/InstructionCombining.cpp
++++ b/lib/Transforms/InstCombine/InstructionCombining.cpp
+@@ -2227,6 +2227,37 @@ Instruction *InstCombiner::visitBranchInst(BranchInst &BI) {
+       return &BI;
+     }
+ 
++  Instruction * CmpLHS = nullptr;
++  Value * CmpRHS = nullptr;
++  // Match:
++  //    %0 = icmp eq CmpLHS CmpRHS
++  //    br %0, TrueDest, FalseDest
++  if (match(&BI, m_Br(m_ICmp(IPred, m_Instruction(CmpLHS), m_Value(CmpRHS)),
++                      TrueDest, FalseDest))) {
++      // Make sure CmpLHS comes from an extract value instruction
++      ExtractValueInst * ev = dyn_cast<ExtractValueInst>(CmpLHS);
++      Value * OpLHS, * OpRHS;
++      OpLHS = OpRHS = nullptr;
++      // Make sure that the input to the extract value comes from the output
++      // of an sadd_with_overflow intrinsic, and that the RHS of the subtraction
++      // is on the RHS of the ICmps (because it's simpler, it should always be on
++      // the right.
++      if (ev && match(ev->getAggregateOperand(),
++                      m_Intrinsic<Intrinsic::ssub_with_overflow>(m_Value(OpLHS),
++                                                                 m_Value(OpRHS)))
++             && OpLHS == CmpRHS) {
++          // Now, we know that OpRHS is guaranteed to be zero in the TrueDest
++          // block. So, we can look at all uses of OpRHS in TrueDest and change
++          // them to a zero constant.
++          for (Use & use : OpRHS->uses()) {
++              Instruction * inst = dyn_cast<Instruction>(use.getUser());
++              if (inst && inst->getParent() == TrueDest) {
++                  use.set(ConstantInt::get(OpRHS->getType(), 0, /*isSigned=*/true));
++              }
++          }
++      }
++  }
++
+   return nullptr;
+ }
+ 
+diff --git a/test/Transforms/InstCombine/branch.ll b/test/Transforms/InstCombine/branch.ll
+index 5be93cc..2acefaf 100644
+--- a/test/Transforms/InstCombine/branch.ll
++++ b/test/Transforms/InstCombine/branch.ll
+@@ -13,4 +13,32 @@ merge:
+   ret i32 %x
+ }
+ 
++define i32 @test1(i32 %a, i32 %b) {
++; CHECK-LABEL: @test1
++entry:
++  %0 = call { i32, i1 } @llvm.ssub.with.overflow.i32(i32 %a, i32 %b)
++  %1 = extractvalue { i32, i1 } %0, 1
++  br i1 %1, label %trap, label %cont
++
++trap:
++; CHECK-LABEL: trap
++  ret i32 -1
++
++cont:
++; CHECK-LABEL: cont
++  %2 = extractvalue { i32, i1 } %0, 0
++  %cmp = icmp eq i32 %2, %a
++  br i1 %cmp, label %if.then, label %return
++
++if.then:
++; CHECK-LABEL: if.then
++; CHECK: ret i32 0
++; CHECK-NOT: ret i32 %b
++  ret i32 %b
++
++return:
++  ret i32 1
++}
+ 
++; Function Attrs: nounwind readnone
++declare { i32, i1 } @llvm.ssub.with.overflow.i32(i32, i32) #1
